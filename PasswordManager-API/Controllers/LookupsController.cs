@@ -15,6 +15,8 @@ namespace PasswordManager_API.Controllers
         {
             _lookupInterface = lookupInterface;
         }
+
+
         [HttpGet("lookups-by-type/{typeId}")]
         public async Task<IActionResult> GetLookups([FromRoute] int typeId)
         {

@@ -145,9 +145,9 @@ namespace PasswordManager_API.Services
 
                 _context.Update(user);
                 _context.SaveChanges();
-                
-                //return jwt token for this user
-                return "";
+
+                var response = TokenHelper.GenerateJWTToken(user.Id.ToString(), "Client");
+                return response;
             }
 
 
