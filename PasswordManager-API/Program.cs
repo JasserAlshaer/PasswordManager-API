@@ -17,6 +17,7 @@ builder.Services.AddScoped<ILookupInterface, LookupAppService>();//configure for
 builder.Services.AddScoped<IUserAuthanticationInterface, AuthnticationAppService>();
 builder.Services.AddScoped<IUserProfileInterface, UserProfileAppService>();
 builder.Services.AddScoped<IProviderInterface, ProviderAppService>();
+builder.Services.AddScoped<IAccountInterface, AccountAppService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
