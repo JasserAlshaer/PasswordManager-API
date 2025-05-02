@@ -14,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<PasswordManagerDbContext>(opt => opt.UseSqlServer("Data Source=DESKTOP-E4L6533\\SQLEXPRESS;Initial Catalog=PasswordManagerDb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"));
 builder.Services.AddScoped<ILookupInterface, LookupAppService>();//configure for my own servcie
 builder.Services.AddScoped<IUserAuthanticationInterface, AuthnticationAppService>();
+builder.Services.AddScoped<IUserProfileInterface, UserProfileAppService>();
+builder.Services.AddScoped<IProviderInterface, ProviderAppService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

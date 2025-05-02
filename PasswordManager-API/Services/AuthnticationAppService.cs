@@ -111,9 +111,21 @@ namespace PasswordManager_API.Services
             _context.SaveChanges();
 
 
+            if(person.Id > 0)
+            {
+                Profile profile = new Profile();
+                profile.Email = input.Email;
+                profile.Phone = null;
+                profile.Image = null;
+                profile.UserId = person.Id;
+                _context.Add(profile);
+                _context.SaveChanges();
+                return "Verifuing Your email using otp";
+            }
+            return "Some thing went wrong while adding user";
             //need to create profile for this user
             
-            return "Verifuing Your email using otp";
+           
         }
 
 
