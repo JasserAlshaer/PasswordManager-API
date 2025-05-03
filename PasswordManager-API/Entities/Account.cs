@@ -10,5 +10,11 @@
         public string Password { get; set; }
         public int CategoryId { get; set; }
         public int? ProviderId { get; set; }
+        public string UserNameNonce { get; set; }
+        public string UserNameTag { get; set; }
+
+        public string PasswordNonce { get; set; }
+        public string PasswordTag { get; set; }
+        public byte[] Key { get; set; }
     }
 }

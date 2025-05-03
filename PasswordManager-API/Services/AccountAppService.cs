@@ -2,7 +2,9 @@
 using PasswordManager_API.Context;
 using PasswordManager_API.DTOs.Accounts;
 using PasswordManager_API.Entities;
+using PasswordManager_API.Helpers;
 using PasswordManager_API.Interfaces;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace PasswordManager_API.Services
@@ -16,14 +18,17 @@ namespace PasswordManager_API.Services
         }
         public async Task<string> CopyAccountOrignizalPassword(int Id)
         {
-            var query = from a in _context.Accounts
+            var query = (from a in _context.Accounts
                         where a.Id == Id
                         select new
                         {
-
-                        };
+                            Pass = a.Password,
+                            Nonce = a.PasswordNonce,
+                            Tag = a.PasswordTag,
+                            Key = a.Key
+                        }).FirstOrDefault();
             //Decypt 
-            return "";
+            return EncryptionHelper.Decrypt(query.Pass,query.Nonce,query.Tag,query.Key);
         }
 
         public async Task<string> CreateUpdateAccount(CreateUpdateAccountInputDTO input)
@@ -48,11 +53,26 @@ namespace PasswordManager_API.Services
                 // Update fields
                 account.Title = input.Title ?? account.Title;
                 account.Description = input.Description ?? account.Description;
-              
+
                 account.UsernameTypeId = input.UsernameTypeId ?? account.UsernameTypeId;
                 account.UserId = input.UserId ?? account.UserId;
-                account.Username = input.Username ?? account.Username; // encryption
-                account.Password = input.Password ?? account.Password;// encryption
+                byte[] key = new byte[32];
+                RandomNumberGenerator.Fill(key);
+                if (input.Username != null)
+                {
+                    var usernameNew = EncryptionHelper.Encrypt(input.Username, key);
+                    account.Username = usernameNew.CipherText;// encryption
+                    account.UserNameNonce = usernameNew.Nonce;
+                    account.UserNameTag = usernameNew.Tag;
+                }
+                if (input.Password != null)
+                {
+                    var passwordNew = EncryptionHelper.Encrypt(input.Password, key);
+                    account.Password = passwordNew.CipherText;// encryption
+                    account.PasswordNonce = passwordNew.Nonce;
+                    account.PasswordTag = passwordNew.Tag;
+                }
+
                 account.CategoryId = input.CategoryId ?? account.CategoryId;
                 account.ProviderId = input.ProviderId ?? account.ProviderId;
 
@@ -60,13 +80,22 @@ namespace PasswordManager_API.Services
             }
             else
             {
+                byte[] key = new byte[32];
+                RandomNumberGenerator.Fill(key);
+
+                var usernameNew = EncryptionHelper.Encrypt(input.Username, key);
+                var passwordNew = EncryptionHelper.Encrypt(input.Password, key);
                 // Create new account
                 account = new Account
                 {
                     Title = input.Title,
                     Description = input.Description,
-                    Username = input.Username,// encryption
-                    Password = input.Password,// encryption
+                    Username = usernameNew.CipherText,// encryption
+                    UserNameNonce = usernameNew.Nonce,
+                    UserNameTag = usernameNew.Tag,
+                    Password = passwordNew.CipherText,// encryption
+                    PasswordNonce = passwordNew.Nonce,
+                    PasswordTag = passwordNew.Tag,
                     UsernameTypeId = input.UsernameTypeId ?? throw new ArgumentException("UsernameTypeId is required."),
                     UserId = input.UserId ?? throw new ArgumentException("UserId is required."),
                     CategoryId = input.CategoryId ?? throw new ArgumentException("CategoryId is required."),
