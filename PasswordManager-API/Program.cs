@@ -12,7 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<PasswordManagerDbContext>(opt => opt.UseSqlServer("Data Source=DESKTOP-E4L6533\\SQLEXPRESS;Initial Catalog=PasswordManagerDb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"));
+//builder.Services.AddDbContext<PasswordManagerDbContext>(opt => opt.UseSqlServer("Data Source=DESKTOP-E4L6533\\SQLEXPRESS;Initial Catalog=PasswordManagerDb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"));
+builder.Services.AddDbContext<PasswordManagerDbContext>(opt => opt.UseSqlServer("Data Source=VAGRANT-MC0J25I\\SQLEXPRESS;Initial Catalog=PasswordManagerDb;User Id=admin;Password=Test@1234;Trust Server Certificate=True"));
 builder.Services.AddScoped<ILookupInterface, LookupAppService>();//configure for my own servcie
 builder.Services.AddScoped<IUserAuthanticationInterface, AuthnticationAppService>();
 builder.Services.AddScoped<IUserProfileInterface, UserProfileAppService>();
@@ -21,11 +22,13 @@ builder.Services.AddScoped<IAccountInterface, AccountAppService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+//app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Password Manager API");
+    c.RoutePrefix = string.Empty;
+});
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
