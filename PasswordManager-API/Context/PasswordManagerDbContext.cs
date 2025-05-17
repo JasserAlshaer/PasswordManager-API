@@ -34,9 +34,10 @@ namespace PasswordManager_API.Context
                 );
             //LookupItem
             modelBuilder.Entity<LookupItem>().HasData(
-                new LookupItem { Id = 10, Name = "Jordanin",LookupTypeId = 1 },
+                new LookupItem { Id = 10, Name = "Jordanian",LookupTypeId = 1 },
                 new LookupItem { Id = 1, Name = "Client",LookupTypeId = 2 },
                 new LookupItem { Id = 2, Name = "Admin", LookupTypeId = 2 },
+                new LookupItem { Id = 3, Name = "Driver", LookupTypeId = 2 },
                 new LookupItem { Id = 100, Name = "Phone",LookupTypeId=3 },
                 new LookupItem { Id = 101, Name = "Name", LookupTypeId = 3 },
                 new LookupItem { Id = 102, Name = "Email", LookupTypeId = 3 },
@@ -59,6 +60,7 @@ namespace PasswordManager_API.Context
                     IsVerfied = true
                 }
                 );
+
         }
     }
 }
